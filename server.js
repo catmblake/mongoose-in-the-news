@@ -24,9 +24,18 @@ app.use(express.json());
 // Make public a static folder
 app.use(express.static("public"));
 
+// Require Handlebars
+var exphbs = require("express-handlebars");
+
+app.engine("handlebars", exphbs({ defaultLayout: "main" }));
+app.set("view engine", "handlebars");
+
 // Connect to Mongo DB
 mongoose.connect("mongodb://localhost/mongooseInTheNews", { useNewUrlParser: true });
 
+app.get("/", function(req, res) {
+  res.render("index");
+});
 
 // Start the server
 app.listen(PORT, function() {
