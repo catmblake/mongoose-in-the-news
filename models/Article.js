@@ -10,6 +10,16 @@ var ArticleSchema = new Schema({
     type: String,
     required: true
   },
+  // byline: type string, not required
+  byline: {
+    type: String,
+    required: false
+  },
+  // image: type string, not required
+  image: {
+    type: String,
+    required: false
+  },
   // link: type: string, required
   link: {
     type: String,

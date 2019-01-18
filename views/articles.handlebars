@@ -1,0 +1,11 @@
+{{#each article}}
+{{#if this.image}}
+<img class="thumbnail" src="{{this.image}}" alt="article image">
+{{/if}}
+<h4>{{this.title}}</h4>
+{{#if this.byline}}
+<p>{{this.byline}}</p>
+{{/if}}
+<p><a href="{{this.link}}">Read More</a></p>
+
+{{/each}}

@@ -54,18 +54,26 @@ app.get("/scrape", function(req, res) {
         .find("div.card__headline__text")
         .text();
 
+      var byString = $(element)
+        .find("div.card__byline")
+        .text();
+
       var linkString = $(element)
         .find("a")
         .attr("href");
 
       result.title = titleString.slice(1, -1);
+      result.byline = byString.slice(0, -3);
       result.link = `http://huffingtonpost.com${linkString}`;
 
+      result.image = $(element)
+      .find("div.card__image")
+      .children()
+      .attr("src");
       //Create a new Article using the result object built from scraping
       db.Article.create(result)
         .then(function(dbArticle) {
           // View the added result in the console
-          console.log(dbArticle);
         })
         .catch(function(err) {
           // If an error occurred, log it
@@ -78,6 +86,54 @@ app.get("/scrape", function(req, res) {
   });
 });
 
+// Route for getting all Articles from the db
+app.get("/articles", function(req, res) {
+  // Grab every document in the Articles collection
+  db.Article.find({})
+    .then(function(dbArticle) {
+      // Send all Articles to the client
+      console.log(dbArticle)
+      res.render("articles", {article: dbArticle});
+    })
+    .catch(function(err) {
+      // If an error occurred, send it to the client
+      res.json(err);
+    });
+});
+
+// Route for grabbing a specific Article by id
+app.get("/articles/:id", function(req, res) {
+  // Find article by it's id
+  db.Article.findOne({ _id: req.params.id })
+    // Populate all notes associated with it
+    .populate("note")
+    .then(function(dbArticle) {
+      // If Article exists, send to client
+      res.json(dbArticle);
+    })
+    .catch(function(err) {
+      // If error, send to client
+      res.json(err);
+    });
+});
+
+// Route for saving/updating an Article's associated Note
+app.post("/articles/:id", function(req, res) {
+  // Create a new note
+  db.Note.create(req.body)
+    .then(function(dbNote) {
+      // Add note to be associated with it's article
+      return db.Article.findOneAndUpdate({ _id: req.params.id }, { note: dbNote._id }, { new: true });
+    })
+    .then(function(dbArticle) {
+      // Send article back to the client
+      res.json(dbArticle);
+    })
+    .catch(function(err) {
+      // If error, send to client
+      res.json(err);
+    });
+});
 
 
 // Start the server
