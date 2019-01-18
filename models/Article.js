@@ -25,6 +25,11 @@ var ArticleSchema = new Schema({
     type: String,
     required: true
   },
+  // saved: boolean
+  saved: {
+    type: Boolean,
+    default: false
+  },
   // note is an object that stores a Note id
   // ref links the ObjectId of Article to the associated note
   note: {
