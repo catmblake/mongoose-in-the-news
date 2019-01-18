@@ -44,30 +44,33 @@ app.get("/scrape", function(req, res) {
     // Then, we load that into cheerio and save it to $ for a shorthand selector
     var $ = cheerio.load(response.data);
 
-    // Now, we grab every article tag, and do the following:
+    // Now, we grab every div with class card content, and do the following:
     $("div.card__content").each(function(i, element) {
       // Save an empty result object
       var result = {};
 
       // Add the text and href of every link, and save them as properties of the result object
-      result.title = $(element)
+      var titleString = $(element)
         .find("div.card__headline__text")
         .text();
-      result.link = $(element)
+
+      var linkString = $(element)
         .find("a")
         .attr("href");
 
-      // Create a new Article using the `result` object built from scraping
-      // db.Article.create(result)
-      //   .then(function(dbArticle) {
-      //     // View the added result in the console
-      //     console.log(dbArticle);
-      //   })
-      //   .catch(function(err) {
-      //     // If an error occurred, log it
-      //     console.log(err);
-      //   });
-      console.log(result);
+      result.title = titleString.slice(1, -1);
+      result.link = `http://huffingtonpost.com${linkString}`;
+
+      //Create a new Article using the result object built from scraping
+      db.Article.create(result)
+        .then(function(dbArticle) {
+          // View the added result in the console
+          console.log(dbArticle);
+        })
+        .catch(function(err) {
+          // If an error occurred, log it
+          console.log(err);
+        });
     });
 
     // Send a message to the client
