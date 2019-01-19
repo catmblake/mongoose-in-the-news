@@ -31,3 +31,16 @@
         <button id="empty">Clear Articles</button>
     </div>
 </div>
+
+{{#each article}}
+{{#if this.image}}
+<img class="thumbnail" src="{{this.image}}" alt="article image">
+{{/if}}
+<h4>{{this.title}}</h4>
+<button class="btn btn-primary save" data-id="{{this._id}}" >Save Article</button>
+{{#if this.byline}}
+<p>{{this.byline}}</p>
+{{/if}}
+<p><a href="{{this.link}}">Read More</a></p>
+
+{{/each}}

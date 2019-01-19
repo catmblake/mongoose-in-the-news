@@ -33,14 +33,8 @@ app.set("view engine", "handlebars");
 // Connect to Mongo DB
 mongoose.connect("mongodb://localhost/mongoHeadLines", { useNewUrlParser: true });
 
-app.get("/", function (req, res) {
-  res.render("index");
-});
-
-
-// A GET route for scraping the echoJS website
-app.get("/scrape", function (req, res) {
   // First, we grab the body of the html with axios
+  function scrapeArticles() { 
   axios.get("http://www.huffingtonpost.com/").then(function (response) {
     // Then, we load that into cheerio and save it to $ for a shorthand selector
     var $ = cheerio.load(response.data);
@@ -82,24 +76,41 @@ app.get("/scrape", function (req, res) {
         });
     });
     // Send a message to the client
-    res.send("Scrape Complete");
+    // res.send("Scrape Complete");
   });
-});
+};
+// });
 
+// app.get("/", function (req, res) {
+//   res.render("index");
+// });
+// A GET route for scraping the echoJS website
+app.get("/scrape", function (req, res) {
+  scrapeArticles();
+  res.send("Scrape Complete");
+})
 // Route for getting all Articles from the db
-app.get("/articles", function (req, res) {
+app.get("/", function (req, res) {
   // Grab every document in the Articles collection
   db.Article.find({})
     .then(function (dbArticle) {
       // Send all Articles to the client
       console.log(dbArticle)
-      res.render("articles", { article: dbArticle });
+      res.render("index", { article: dbArticle });
     })
     .catch(function (err) {
       // If an error occurred, send it to the client
       res.json(err);
     });
 });
+
+app.delete("/scrape", function (req, res) {
+  db.Article.deleteMany({})
+  .then(function (dataDeleted) {
+    console.log(dataDeleted);
+    res.send("Articles Removed");
+  })
+})
 
 // Route for grabbing a specific Article by id
 app.get("/articles/:id", function (req, res) {
@@ -137,7 +148,7 @@ app.post("/saved", function (req, res) {
 
 app.get("/saved", function(req, res){
   db.Article.find({"saved": true}).then(function (saved, err) {
-    res.render("articles", {article: saved})
+    res.render("saved", {article: saved})
   })
 })
 // Route for saving/updating an Article's associated Note
