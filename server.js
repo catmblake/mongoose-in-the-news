@@ -30,13 +30,13 @@ var exphbs = require("express-handlebars");
 app.engine("handlebars", exphbs({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
+// Connecting to either mLab or local MongoDB
 var databaseUri = "mongodb://localhost/mongoHeadLines";
 
 if (process.env.MONGODB_URI) {
   mongoose.connect(process.env.MONGODB_URI);
 } else {
-// Connect to Mongo DB
-mongoose.connect(databaseUri, { useNewUrlParser: true });
+mongoose.connect(databaseUri);
 }
 
 var database = mongoose.connection;
@@ -49,13 +49,13 @@ database.once("open", function (){
   console.log("Mongoose connection successful.");
 });
 
-  // First, we grab the body of the html with axios
+  // Function to grab the body of the html with axios
   function scrapeArticles() { 
   axios.get("http://www.huffingtonpost.com/").then(function (response) {
-    // Then, we load that into cheerio and save it to $ for a shorthand selector
+    // Load into cheerio and save it to $ for a shorthand selector
     var $ = cheerio.load(response.data);
 
-    // Now, we grab every div with class card content, and do the following:
+    // Grab every div with class card content, and do the following:
     $("div.card__content").each(function (i, element) {
       // Save an empty result object
       var result = {};
@@ -91,16 +91,10 @@ database.once("open", function (){
           console.log(err);
         });
     });
-    // Send a message to the client
-    // res.send("Scrape Complete");
   });
 };
-// });
 
-// app.get("/", function (req, res) {
-//   res.render("index");
-// });
-// A GET route for scraping the echoJS website
+// A GET route for scraping the huffpost website
 app.get("/scrape", function (req, res) {
   scrapeArticles();
   res.send("Scrape Complete");
@@ -120,6 +114,7 @@ app.get("/", function (req, res) {
     });
 });
 
+// Route for deleting all articles from database
 app.delete("/scrape", function (req, res) {
   db.Article.deleteMany({})
   .then(function (dataDeleted) {
@@ -130,7 +125,6 @@ app.delete("/scrape", function (req, res) {
 
 // Route for grabbing a specific Article by id
 app.get("/articles/:id", function (req, res) {
-  // Find article by it's id
   db.Article.findOne({ _id: req.params.id })
     // Populate all notes associated with it
     .populate("note")
@@ -143,7 +137,7 @@ app.get("/articles/:id", function (req, res) {
       res.json(err);
     });
 });
-
+// Route for saving articles
 app.post("/saved", function (req, res) {
   db.Article.findByIdAndUpdate(req.body.id, {
     $set: {
@@ -161,7 +155,26 @@ app.post("/saved", function (req, res) {
       res.json(err);
     })
 });
+// Route for removing saved articles
+app.put("/saved", function (req, res) {
+  db.Article.findByIdAndUpdate(req.body.id, {
+    $set: {
+      saved: req.body.saved
+    }
+  }, {
+      new: true
 
+    })
+    .then(function (dbRemoved) {
+      res.json(dbRemoved);
+    })
+    .catch(function (err) {
+      // If error, send to client
+      res.json(err);
+    })
+});
+
+// Route for getting all saved articles
 app.get("/saved", function(req, res){
   db.Article.find({"saved": true})
   .populate("notes")
@@ -186,7 +199,6 @@ app.post("/articles/:id", function (req, res) {
       res.json(err);
     });
 });
-
 
 // Start the server
 app.listen(PORT, function () {

@@ -1,6 +1,6 @@
 .jumbotron {
     background-image: url("../images/news-and-magazines.jpg");
 }
-.thumbnail {
-    height: 100px;
+.lead {
+    font-weight: bold;
 }

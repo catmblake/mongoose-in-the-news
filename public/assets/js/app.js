@@ -51,7 +51,30 @@ $(document).ready(function () {
         alert(err.responseText);
       });
   });
-
+  // Click function to remove article from favorites
+  $(".remove").on("click", function () {
+    var artRemoveId = $(this).data("id");
+    $.ajax({
+      method: "PUT",
+      url: `/saved`,
+      data: {
+        id: artRemoveId,
+        saved: false
+      },
+      success: function (response) {
+        setTimeout(function () {
+          window.location.reload();
+        }, 1000)
+      }
+    })
+      .then(function (data) {
+        console.log(data);
+      })
+      .catch(function (err) {
+        console.log(err);
+        alert(err.responseText);
+      });
+  });
 
   // Click function to save a note to the corresponding article
   $(".add-note").on("click", function () {
