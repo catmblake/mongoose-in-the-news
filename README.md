@@ -12,4 +12,4 @@ Mongoose in the News is a web app that lets users view and leave comments on the
    - bootstrap
    
 ### Mongoose In Action
-If you would like to check out Mongoose in the News, it's deplayed [here](https://dashboard.heroku.com/apps/mongoose-in-the-news) on heroku.
+If you would like to check out Mongoose in the News, it's deplayed [here](https://mongoose-in-the-news.herokuapp.com/) on heroku.
