@@ -31,10 +31,9 @@ app.engine("handlebars", exphbs({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
 // Connecting to either mLab or local MongoDB
-var databaseUri = "mongodb://localhost/mongoHeadLines";
+var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
 
-mongoose.connect(process.env.MONGODB_URI || databaseUri);
-
+mongoose.connect(MONGODB_URI);
 
 var database = mongoose.connection;
 
