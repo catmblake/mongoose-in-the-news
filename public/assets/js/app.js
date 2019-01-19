@@ -81,7 +81,7 @@ $(document).ready(function () {
     var noteTitle = $("textarea.title").val().trim();
     var noteBody = $("textarea.body").val().trim();
     var artId = $(this).data("article");
-    console.log(noteTitle + noteBody + artId);
+    $("form").reset();
 
     $.ajax({
       method: "POST",

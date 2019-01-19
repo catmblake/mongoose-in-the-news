@@ -33,11 +33,8 @@ app.set("view engine", "handlebars");
 // Connecting to either mLab or local MongoDB
 var databaseUri = "mongodb://localhost/mongoHeadLines";
 
-if (process.env.MONGODB_URI) {
-  mongoose.connect(process.env.MONGODB_URI);
-} else {
-mongoose.connect(databaseUri);
-}
+mongoose.connect(process.env.MONGODB_URI || databaseUri);
+
 
 var database = mongoose.connection;
 
