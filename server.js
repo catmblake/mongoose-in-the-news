@@ -30,8 +30,24 @@ var exphbs = require("express-handlebars");
 app.engine("handlebars", exphbs({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
+var databaseUri = "mongodb://localhost/mongoHeadLines";
+
+if (process.env.MONGODB_URI) {
+  mongoose.connect(process.env.MONGODB_URI);
+} else {
 // Connect to Mongo DB
-mongoose.connect("mongodb://localhost/mongoHeadLines", { useNewUrlParser: true });
+mongoose.connect(databaseUri, { useNewUrlParser: true });
+}
+
+var database = mongoose.connection;
+
+database.on("error", function(err) {
+  console.log("Mongoose Error ", err);
+});
+
+database.once("open", function (){
+  console.log("Mongoose connection successful.");
+});
 
   // First, we grab the body of the html with axios
   function scrapeArticles() { 
