@@ -127,7 +127,7 @@ app.delete("/scrape", function (req, res) {
 app.get("/articles/:id", function (req, res) {
   db.Article.findOne({ _id: req.params.id })
     // Populate all notes associated with it
-    .populate("note")
+    .populate("notes")
     .then(function (dbArticle) {
       // If Article exists, send to client
       res.json(dbArticle);
