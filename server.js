@@ -147,7 +147,9 @@ app.post("/saved", function (req, res) {
 });
 
 app.get("/saved", function(req, res){
-  db.Article.find({"saved": true}).then(function (saved, err) {
+  db.Article.find({"saved": true})
+  .populate("notes")
+  .then(function (saved, err) {
     res.render("saved", {article: saved})
   })
 })
@@ -157,7 +159,7 @@ app.post("/articles/:id", function (req, res) {
   db.Note.create(req.body)
     .then(function (dbNote) {
       // Add note to be associated with it's article
-      return db.Article.findOneAndUpdate({ _id: req.params.id }, { note: dbNote._id }, { new: true });
+      return db.Article.findOneAndUpdate({ _id: req.params.id }, {$push: { notes: dbNote._id } }, { new: true });
     })
     .then(function (dbArticle) {
       // Send article back to the client

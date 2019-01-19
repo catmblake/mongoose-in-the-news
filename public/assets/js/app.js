@@ -52,19 +52,28 @@ $(document).ready(function () {
       });
   });
 
-  // Click function to save a note to the corresponding article
-  $(".add-note").on("click", function() {
-    var title = $("textarea.title").val().trim();
-    var body = $("textarea.body").val().trim();
-    var artId = $(this).data("article");
-    console.log(title + body + artId);
 
-    // $.ajax({
-    //   method: "POST",
-    //   url: `/articles/${artId}`,
-    //   data: {
-    //     title:
-    //   }
-    // })
-  })
+  // Click function to save a note to the corresponding article
+  $(".add-note").on("click", function () {
+    var noteTitle = $("textarea.title").val().trim();
+    var noteBody = $("textarea.body").val().trim();
+    var artId = $(this).data("article");
+    console.log(noteTitle + noteBody + artId);
+
+    $.ajax({
+      method: "POST",
+      url: `/articles/${artId}`,
+      data: {
+        title: noteTitle,
+        body: noteBody
+      }
+    })
+      .then(function (data) {
+        console.log(data);
+      })
+      .catch(function (err) {
+        console.log(err);
+        alert(err.responseText);
+      });
+  });
 });

@@ -1,50 +1,79 @@
-{{#each article}}
-{{#if this.image}}
-<img class="thumbnail" src="{{this.image}}" alt="article image">
-{{/if}}
-<h4>{{this.title}}</h4>
-<button class="btn btn-primary remove" data-id="{{this._id}}">Remove Article</button>
-{{!-- <button class="btn btn-primary note" data-id="{{this._id}}">Article Notes</button> --}}
-<!-- Button trigger modal -->
-<button type="button" class="btn btn-primary note" data-id="{{this._id}}" data-toggle="modal" data-target="#note-modal-{{this._id}}">
-    Article Notes
-</button>
-{{#if this.byline}}
-<p>{{this.byline}}</p>
-{{/if}}
-<p><a href="{{this.link}}">Read More</a></p>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="/">Home</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav"
+        aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+            <li class="nav-item active">
+                <a class="nav-link" href="/saved">Saved Articles</a>
+            </li>
+</nav>
+<div class="jumbotron jumbotron-fluid">
+    <div class="container">
+        <h1 class="display-4">Your Favorite Headlines</h1>
+        <p class="lead">Browse Your Favorite Articles</p>
+    </div>
+</div>
 
-<!-- Modal -->
-<div class="modal fade" id="note-modal-{{this._id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Modal {{this._id}}</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
+<div class="row">
+    {{#each article}}
+    <div class="col-lg-3">
+        <div class="card" style="width: 18rem;">
+            {{#if this.image}}
+            <img src="{{this.image}}" class="card-img-top" alt="article image">
+            {{/if}}
+            <div class="card-body">
+                <h5 class="card-title">{{this.title}}</h5>
+                {{#if this.byline}}
+                <p class="card-text">{{this.byline}}</p>
+                {{/if}}
+                <a href="{{this.link}}" class="btn btn-primary">Read More</a> <br>
+                <button type="button" class="btn btn-primary note" data-id="{{this._id}}" data-toggle="modal"
+                    data-target="#note-modal-{{this._id}}">
+                    Article Notes
                 </button>
-            </div>
-            <div class="modal-body">
-                <ul class="list-group note-container">
-                    <li class="list-group-item">No notes for this article yet.</li>
-                </ul>
-                <form>
-                    <div class="form-group">
-                        <label for="noteTitle">Title</label>
-                        <textarea class="form-control title" rows="1"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="noteBody">Note</label>
-                        <textarea class="form-control body" rows="3"></textarea>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary add-note" data-article="{{this._id}}" data-dismiss="modal">Save changes</button>
+                <button class="btn btn-primary remove" data-id="{{this._id}}">Remove Article</button>
             </div>
         </div>
     </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="note-modal-{{this._id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Modal {{this._id}}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <ul class="list-group note-container">
+                        {{#each this.notes}}
+                        <li class="list-group-item">{{this.note.title}}</li>
+                        {{/each}}
+                    </ul>
+                    <form>
+                        <div class="form-group">
+                            <label for="noteTitle">Title</label>
+                            <textarea class="form-control title" rows="1"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="noteBody">Note</label>
+                            <textarea class="form-control body" rows="3"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary add-note" data-article="{{this._id}}" data-dismiss="modal">Save
+                        changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{/each}}
 </div>
-{{/each}}
