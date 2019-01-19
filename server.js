@@ -200,6 +200,18 @@ app.post("/articles/:id", function (req, res) {
     });
 });
 
+app.delete("/articles/:id", function (req, res) {
+  db.Note.deleteOne({ _id: req.params.id })
+    .then(function (dbNotes) {
+      // If Article exists, send to client
+      res.json(dbNotes);
+    })
+    .catch(function (err) {
+      // If error, send to client
+      res.json(err);
+    });
+});
+
 // Start the server
 app.listen(PORT, function () {
   console.log(`App running on port ${PORT}!`);

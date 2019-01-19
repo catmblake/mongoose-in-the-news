@@ -99,4 +99,27 @@ $(document).ready(function () {
         alert(err.responseText);
       });
   });
+
+  // Click function to delete note from the corresponding article
+  $(".delete-note").on("click", function () {
+    var noteId = $(this).data("note");
+    console.log(noteId);
+
+    $.ajax({
+      method: "DELETE",
+      url: `/articles/${noteId}`,
+      success: function (response) {
+        setTimeout(function () {
+          window.location.reload();
+        }, 1000)
+      }
+    })
+      .then(function (data) {
+        console.log(data);
+      })
+      .catch(function (err) {
+        console.log(err);
+        alert(err.responseText);
+      });
+  });
 });
